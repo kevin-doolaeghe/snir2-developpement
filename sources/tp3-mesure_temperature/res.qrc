@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>images/affich.png</file>
+        <file>images/fond.jpg</file>
+        <file>images/therm.jpg</file>
+    </qresource>
+</RCC>

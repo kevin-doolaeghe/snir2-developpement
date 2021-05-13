@@ -1,0 +1,554 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>MD22 Technical Documentation</TITLE>
+<META http-equiv=Content-Language content=en-gb>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="Microsoft FrontPage 4.0" name=GENERATOR>
+<META content=FrontPage.Editor.Document name=ProgId></HEAD>
+<BODY>
+<P align=center><FONT size=5><B><SPAN 
+style="BACKGROUND-COLOR: #ffff00">&nbsp;MD22 - Dual 24Volt 5Amp H Bridge Motor 
+Drive&nbsp; </SPAN></B></FONT></P>
+<P><B><U>Overview</U></B><BR>The MD22 is a robust low/medium power motor driver, 
+designed to supply power for two motors. Main features 
+are:<BR><BR>1.&nbsp;&nbsp;&nbsp; Drives two motors with independent 
+control.&nbsp;<BR>2.&nbsp;&nbsp;&nbsp; Ease of use and 
+flexibility.&nbsp;<BR>3.&nbsp;&nbsp;&nbsp; The 15v MOSFET drive voltage is 
+generated onboard with a charge pump, so the module requires only two supply 
+voltages;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)&nbsp;&nbsp; A standard 5V 
+supply for the control logic, only 50mA maximum is 
+required.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)&nbsp;&nbsp; The H-Bridge
+has a rating of 60v allowing Motor voltages up to 24vdc.<BR>4.&nbsp;&nbsp;&nbsp; Steering 
+feature, motors can be commanded to turn by I2C register or input (Analogue + 
+Servo). <BR>5.&nbsp;&nbsp;&nbsp; Control of the module can be any 
+of;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)&nbsp;&nbsp;&nbsp; I2C bus, up to 
+8 MD22 modules, switch selectable addresses and 4 modes of operation including 
+steering..<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)&nbsp;&nbsp;&nbsp; 2 
+independent 0v-2.5v-5v analog inputs. 0v full reverse, 2.5v center stop, 5v full 
+forward.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)&nbsp;&nbsp;&nbsp; 0v-2.5v-5v 
+analog input for speed ,with the other channel for 
+steering.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d)&nbsp;&nbsp;&nbsp; 
+independent channel RC mode. Motors are individually Controlled directly from 
+the RC receiver output.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+e)&nbsp;&nbsp;&nbsp; RC mode with steering, allows speed control with one stick 
+of radio control, and steering with the other.<BR>6.&nbsp;&nbsp;&nbsp; Uses high 
+current MOSFETs, making a very robust
+module.<br>
+<br>
+<B>MD22 Connections</B></P>
+<TABLE cellSpacing=10 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top width="25%">
+      <TABLE borderColor=#ff0000 width="92%" bgColor=#ffff00 border=1>
+        <TBODY>
+        <TR>
+          <TD width="100%">
+            <P align=center>N<B>ote</B> - <B>There is no fuse on the&nbsp; PCB. 
+            You should provide a&nbsp;10A fuse in line with the +v battery 
+            terminal.</B></P>
+            <P align=center><B>Don't Ignore this, High currents can be 
+            dangerous!</B></P></TD></TR></TBODY></TABLE>
+      <P align=center>&nbsp;</P></TD>
+    <TD width="75%"><img border="0" src="../images/md22c.jpg" width="597" height="225"></TD></TR></TBODY></TABLE>
+<P align=left><FONT size=3>The Motor Ground and the Logic Ground are internally 
+connected on the Module. Be sure to use cable rated for at least 10A for the 
+Battery, Fuse and Motor leads.</FONT></P>
+<P align=left><font size="3"><b>Motor Noise Suppression&nbsp;<br>
+</b>Please note that using motors with the MD22 as with any other electronic
+device requires suppression of noise. This is easily achieved by the addition of
+a 10n snubbing capacitor across the motors. The capacitor should also be capable
+of handling a voltage of twice the drive voltage to the motor.</font></P>
+<P><B>Mode Switches<BR></B>The 4 mode switches set the operating mode of the 
+MD22. They are read once only when the module is powered up. You cannot switch 
+modes while the unit is on.</P>
+<DIV align=center>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=656 bgColor=#ccffcc border=1>
+  <TBODY>
+  <TR>
+    <TD align=center width=195 bgColor=#66ffff>Mode</TD>
+    <TD align=center width=114 bgColor=#66ffff>Switch 1</TD>
+    <TD align=center width=114 bgColor=#66ffff>Switch 2</TD>
+    <TD align=center width=114 bgColor=#66ffff>Switch 3</TD>
+    <TD align=center width=115 bgColor=#66ffff>Switch 4</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xB0</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xB2</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xB4</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xB6</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xB8</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xBA</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xBC</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>I2C Bus - address 0xBE</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>On</TD></TR>
+  <TR>
+    <TD align=center width=195>0v - 2.5v - 5v Analog </TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>Off</TD></TR>
+  <TR>
+    <TD align=center width=195>0v - 2.5v - 5v Analog + Turn </TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>Off</TD></TR>
+  <TR>
+    <TD align=center width=195>RC Servo</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>Off</TD></TR>
+  <TR>
+    <TD align=center width=195>RC Servo + Turn</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=115>Off</TD></TR></TBODY></TABLE></CENTER></DIV>
+<P><b>New modes from version 3(Dec 2004)</b> </P>
+<div align="center">
+  <center>
+<TABLE cellSpacing=0 cellPadding=0 width=656 bgColor=#ccffcc border=1>
+  <TR>
+    <TD align=center width=195>RC Servo, timeout on</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>Off</TD></TR>
+  <TR>
+    <TD align=center width=195>RC Servo + turn, timeout on&nbsp;</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>Off</TD></TR></TABLE></center>
+</div>
+<P><b>New modes from version 9(Mar 2006)</b> </P>
+<div align="center">
+  <center>
+<TABLE cellSpacing=0 cellPadding=0 width=656 bgColor=#ccffcc border=1>
+  <TR>
+    <TD align=center width=195>Analogue turn mode 2</TD>
+    <TD align=center width=114>On</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>Off</TD></TR>
+  <TR>
+    <TD align=center width=195>RC Servo, turn mode 2, timeout on&nbsp;</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=114>Off</TD>
+    <TD align=center width=115>Off</TD></TR></TABLE></center>
+</div>
+<P>&nbsp; </P>
+<P><BR>Note that I2C addresses are the upper 7 bits. Bit 0 the the read/write 
+bit, so addresses 0xB0/0xB1 are write/read respectively to the same 
+address.<BR>This range of I2C addresses is the same as those used by the 
+MD03. </P>
+<P><B>Analog Mode - 0v-2.5v-5v</B><BR>In this mode the motors are controlled 
+independently by two 0v to 5v analog signal on the SCL (Motor1)&nbsp; and SDA 
+(Motor2) lines.<BR>0v is maximum reverse power<BR>2.5v is the center stop 
+position<BR>5v is full forward power<BR>There is a small (2.7%) dead band around 
+2.5v to provide a stable off position.&nbsp;</P>
+<P><B>Analog Mode - 0v-2.5v-5v with Differential drive<BR></B>Both<B> </B>Motors 
+speed is now controlled by the analogue voltage level on the SCL&nbsp; line. The 
+SDA line is now responsible for offsetting the two speeds and thus controlling 
+the degree of turn.<BR>The voltage levels are the same as above but turn degree 
+is:<BR>0v is hard turn left<BR>2.5v is the straight position<BR>5v is hard turn 
+right<BR>There is the same dead band (2.7%) on the speed and the turn. 
+.&nbsp;</P>
+<P><B>RC Servo Mode</B><BR>This mode allows direct connection to standard model 
+radio control receivers. Most receivers work from a 4.8v-6v battery pack and can 
+be powered by 5v supply that powers the MD22 logic. The control pulses (Yellow) 
+from the receiver should be connected to the SCL (Motor1) and SDA (Motor2) 
+terminals. Connect the receiver supply (Red) to +5v logic supply and the 
+receiver 0v ground (Black) to the MD22 logic ground. The output from an RC 
+receiver is a high pulse 1.5mS wide when the joystick is central. The MD22 
+provides full control in the range 1mS to 2mS with 1.5mS being the center off 
+position. There is a 7uS dead zone centered on 1.5mS for the off position. The 
+Radio Transmitter centering control should be adjusted so that the motor is off 
+when the joystick is released.</P>
+<P><B>RC Servo Mode with Differential drive<BR></B>Again uses a standard radio 
+control receiver module output to determine speed with the addition of the 
+extremely useful steering function. the receivers Forward and Reverse 
+channel&nbsp; should be wired to the SCL connection. And the steering (turn) through 
+the SDA channel. Again fine adjustment to the transmitters offset may possibly 
+be needed.</P>
+<P><b>RC Modes with timeout feature (from version 3)<br>
+</b>An extra couple of modes have been added and operate in much the same way as
+the normal servo control. The difference is the addition of a new
+timeout feature. If
+the RC pulse is not detected on a channel 1 (SCL)&nbsp; for a period in excess of
+200ms, then both of the motors will be stop being driven until a valid RC signal
+is received on channel 1.</P>
+<P><B>I2C Mode</B><BR>I2C mode allows the MD22 to be connected to popular 
+controllers such as the PICAXE, OOPic and BS2p, and a wide range of micro-controllers 
+like PIC's, AVR's, 8051's etc.&nbsp;<BR>I2C communication protocol with the MD22 
+module is the same as popular eeprom's such as the 24C04. To read one or more of 
+the MD22 registers, first send a start bit, the module address (0XB0 for example 
+- see mode switches) with the read/write bit low, then the register number you 
+wish to read. This is followed by a repeated start and the module address again 
+with the read/write bit high (0XB1 in this example). You are now able to read 
+one or more registers. The MD22 has 8 registers numbered 0 to 7 as follows;</P>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width="69%" bgColor=#ccffcc border=1>
+  <TBODY>
+  <TR>
+    <TD align=center width="12%" bgColor=#66ffff>
+      <P align=center>Register Address</P></TD>
+    <TD align=center width="29%" bgColor=#66ffff>
+      <P align=center>Name</P></TD>
+    <TD align=center width="23%" bgColor=#66ffff>Read/Write</TD>
+    <TD align=center width="95%" bgColor=#66ffff>
+      <P align=center>Description</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>0</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Mode</P></TD>
+    <TD align=center width="23%">R/W</TD>
+    <TD align=center width="95%">Mode of operation (see below)</TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>1</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Speed</P></TD>
+    <TD align=center width="23%">R/W</TD>
+    <TD align=center width="95%">
+      <P align=center>&nbsp;Left motor speed (mode 0,1) or speed (mode 
+    2,3)</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>2</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Speed2/Turn</P></TD>
+    <TD align=center width="23%">R/W</TD>
+    <TD align=center width="95%">
+      <P align=center>Right motor speed (mode 0,1) or turn (mode 2,3)</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>3</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Acceleration</P></TD>
+    <TD align=center width="23%">R/W</TD>
+    <TD align=center width="95%">
+      <P align=center>Acceleration for i2c (mode 0,1)</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>4</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Unused</P></TD>
+    <TD align=center width="23%">Read only</TD>
+    <TD align=center width="95%">
+      <P align=center>Read as zero</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>5</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Unused</P></TD>
+    <TD align=center width="23%">Read only</TD>
+    <TD align=center width="95%">
+      <P align=center>Read as zero</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>6</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Unused</P></TD>
+    <TD align=center width="23%">Read only</TD>
+    <TD align=center width="95%">
+      <P align=center>Read as zero</P></TD></TR>
+  <TR>
+    <TD align=center width="12%">
+      <P align=center>7</P></TD>
+    <TD align=center width="29%">
+      <P align=center>Software Revision</P></TD>
+    <TD align=center width="23%">Read only</TD>
+    <TD align=center width="95%">
+      <P align=center>Software Revision Number</P></TD></TR></TBODY></TABLE></CENTER>
+<P>The mode register defaults to 0, as does the acceleration register (slowest 
+acceleration). No motor will move until directly after speed or speed2/turn 
+registers are changed.<BR><BR><B>Mode Register</B><BR>The mode register selects 
+which mode of operation and I2C data input type the user requires. The options 
+being:<BR><SPAN style="BACKGROUND-COLOR: #ffff00"><BR></SPAN><FONT 
+size=3><B>0</B>,</FONT>&nbsp;&nbsp;&nbsp;&nbsp; (Default Setting) If a value of 0 is 
+written to the mode register then the meaning of the speed registers is literal 
+speeds in the range of:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 (Full Reverse)&nbsp; 128 (Stop)&nbsp;&nbsp; 255 
+(Full Forward).<BR><BR><B>1,&nbsp;&nbsp;&nbsp;</B> Mode 1 is similar to Mode 0, 
+except that the speed registers are interpreted as signed values. The meaning of 
+the speed registers is literal speeds in the range of:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-128 (Full 
+Reverse)&nbsp;&nbsp; 0 (Stop)&nbsp;&nbsp; 127 (Full 
+Forward).<BR><BR><B>2,</B>&nbsp;&nbsp;&nbsp;&nbsp; Writing a value of&nbsp; 2 to the 
+mode register will make speed control both motors speed. Speed2 then becomes the 
+turn value (type 1).&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data is in the range of 0 (Full Reverse)&nbsp; 128 
+(Stop)&nbsp; 255 (Full&nbsp; Forward).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; note - version 8+ speed controls the
+total power, the turn (speed 2) value is now with reference to this.<BR><BR><B>3,&nbsp;</B>&nbsp;&nbsp; Mode 3 
+is similar to Mode 2, except that the speed registers are interpreted as signed
+values.&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data is in the range of -128 &nbsp;(Full Reverse)&nbsp; 0 
+(Stop)&nbsp;&nbsp; 127 (Full Forward)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; note - version 8+ speed controls the
+total power, the turn (speed 2) value is now with reference to this.</P>
+<P><b>4,&nbsp;&nbsp;&nbsp; </b>(New from version 9) Alternate method of turning (type
+2), the
+turn value being able to introduce power to the system.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data is in the range of 0 (Full Reverse)&nbsp; 128 
+(Stop)&nbsp; 255 (Full&nbsp; Forward).</P>
+<P><b>5</b>,&nbsp;&nbsp;&nbsp; (New from version 9) Alternate method of turning (type
+2), the
+turn value being able to introduce power to the system.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data is in the range of -128 &nbsp;(Full Reverse)&nbsp; 0 
+(Stop)&nbsp;&nbsp; 127 (Full Forward)</P>
+<P><B>Speed Register</B><U><BR></U>Depending on what mode you are in, this 
+register can affect the speed of one motor or both motors. If you are in mode 0 
+or 1 it will Set the speed of the motor 1. The larger the number written to this 
+register, the more power is applied to the motor. If&nbsp; mode is set to a turn
+mode it controls the speed and direction of both motors (subject to effect of turn 
+register).</P>
+<P><B>Speed2/Turn Register</B><U><BR></U>Again when in mode 0 or 1 this register 
+operates the same as speed but controls the operation of the motor 2. When a
+turn mode is selected Speed2 becomes a Turn register, and any value in speed 1 is 
+combined with the contents of this register to steer the device.&nbsp;</P>
+<P><b>Turn mode (up to version 7)</b></P>
+<P>In software versions up to 7, the turn modes look at the speed channel or
+register to decide if the direction is forward or reverse. They then apply a
+subtraction or addition of the turn value on either motor.</P>
+<P>so if the direction is forward<br>
+motor speed1 = speed - turn<br>
+motor speed2 = speed + turn<br>
+<br>
+else the direction is reverse so<br>
+motor speed1 = speed + turn<br>
+motor speed2 = speed - turn<br>
+<br>
+If the either motor is not able to achieve the required speed for the turn
+(beyond the maximum output), then
+the other motor is automatically changed by the program to meet the required
+difference.&nbsp;</P>
+<p align="left"><b>Turn Mode ( Version 8+ )</b></p>
+<p align="left">In turn mode 1 the power supplied to the motors is always with
+reference to the speed. Turn values are only applied with respect to the speed.&nbsp;The turn factor is determined by the equation below, where
+speed_max is a program constant equating to the maximum possible motor speed.<br>
+turn factor&nbsp; = turn * (speed/speed_max)</p>
+<p align="left">And now the power to the motors can be calculated, remembering
+that a turn in either direction in a forward direction is the inverse in the
+reverse direction so:&nbsp;</p>
+<p align="left">if we are moving forwards and require a turn then<br>
+motor speed1 = speed - turn factor&nbsp;<br>
+motor speed2 = speed + turn factor<br>
+<br>
+else if we are moving in reverse and require a turn then<br>
+motor speed1 = speed + turn factor&nbsp;<br>
+motor speed2 = speed - turn factor</p>
+<p align="left">If the either motor is not able to achieve the required speed
+for the turn (beyond the maximum output), then the other motor is automatically changed by the program to
+meet the required difference.&nbsp;</p>
+<p align="left"><b>Turn Mode 2 ( Version 9+ )</b></p>
+<p align="left">In turn mode 2 there is no link between the turn factor and the
+speed, this means when speed is at zero you can still turn. With this method is the backwards turns are inverted (left is right).
+The turn factor is now just :</p>
+<p align="left">turn factor = turn</p>
+<p align="left">And the power to the motor is now :</p>
+<p align="left">motor speed1 = speed - turn factor&nbsp;<br>
+motor speed2 = speed + turn factor</p>
+<p align="left">If the either motor is not able to achieve the required speed
+for the turn (beyond the maximum output), then the other motor is automatically changed by the program to
+meet the required difference.</p>
+<P><B>Acceleration Register (in direct motor control)</B><U><BR></U>If you 
+require a controlled acceleration period for the attached motors to reach there 
+ultimate speed, the MD22 has a register to provide this. It works by inputting a 
+value into the acceleration register which acts as a delay in the power 
+stepping. The amount of steps is the difference between the current speed of the 
+motors and the new speed (from speed 1 and 2 registers). So if the 
+motors&nbsp;were traveling at full speed in the forward direction (255) and were 
+instructed to move at full speed in reverse (0), there would be 255 
+steps.<BR><BR>The acceleration register contains the rate at which the motor 
+board moves through the steps. At 0 (default) the board changes the power 
+(accelerates) at its fastest rate, each step taking 64us. When the acceleration 
+register is loaded with the Slowest setting of 255, the board will change the 
+power output every 16.4ms.<BR><BR>So to calculate the time (in seconds) for the 
+acceleration to complete :<BR>time = accel reg value * 64us * 
+steps.&nbsp;<BR>For example :</P>
+<DIV align=center>
+<CENTER>
+<TABLE height=199 cellSpacing=0 cellPadding=0 width="45%" border=1>
+  <TBODY>
+  <TR>
+    <TD align=center width="16%" bgColor=#66ffff>Accel reg</TD>
+    <TD align=center width="17%" bgColor=#66ffff>Time/step</TD>
+    <TD align=center width="17%" bgColor=#66ffff>Current speed</TD>
+    <TD align=center width="17%" bgColor=#66ffff>New speed</TD>
+    <TD align=center width="17%" bgColor=#66ffff>Steps</TD>
+    <TD align=center width="17%" bgColor=#66ffff>Acceleration&nbsp; time</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>0</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>0</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>0</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>255</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>255</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>0&nbsp;</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>20</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>1.28ms</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>127</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>255</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>128</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>164ms</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>50</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>3.2ms</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>80</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>0</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>80</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>256ms</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>100</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>6.4ms</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>45</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>7</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>38</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>243ms</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>150</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>9.6ms</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>255</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>5</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>250</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>2.4s</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>200</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>12.8ms</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>127</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>0</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>127</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>1.63s</TD></TR>
+  <TR>
+    <TD align=center width="16%" bgColor=#ccffcc>255</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>16.32ms</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>65</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>150</TD>
+    <TD align=center width="17%" bgColor=#ccffcc>85</TD>
+    <TD align=center width="17%" 
+bgColor=#ccffcc>1.39s</TD></TR></TBODY></TABLE></CENTER></DIV>
+<P><U><BR></U><B>Software Revision number</B><BR>This register contains the 
+revision number of the software in the modules PIC16F873 controller - currently
+7 at the time of writing.</P>
+<P><B>Using the MD22 with popular controllers</B><BR>One the easiest ways of 
+connecting the MD22 to a standard controller, such as the BS2 Stamp, is to use 
+RC Servo mode. Select normal (independent) or differential mode on the switches 
+before powering the module. Now you can use the PULSOUT command to simulate the 
+servo pulse and control the motors. The pulse needs to vary between 1mS (full 
+reverse) to 2mS (full forwards) with 1.5mS being the center off position. Unlike 
+servo's, which require the pulse to be repeated every 20mS or so, the MD22 need 
+only be sent a new pulse when you want to change speed. With no pulses being 
+sent it simply continues at the current speed. The timing parameter will vary 
+depending on the controller. Here are some popular examples - all tested by 
+us.</P>
+<DIV align=center>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=596 border=1>
+  <TBODY>
+  <TR>
+    <TD align=center width=100 bgColor=#66ffff>Controller</TD>
+    <TD align=center width=83 bgColor=#66ffff>Pulsout Resolution</TD>
+    <TD align=center width=60 bgColor=#66ffff>Full reverse</TD>
+    <TD align=center width=52 bgColor=#66ffff>Center off</TD>
+    <TD align=center width=72 bgColor=#66ffff>Full Forwards</TD>
+    <TD align=center width=213 bgColor=#66ffff>Command example for Stop</TD></TR>
+  <TR>
+    <TD align=center width=100 bgColor=#ccffcc>BS2</TD>
+    <TD align=center width=83 bgColor=#ccffcc>2uS</TD>
+    <TD align=center width=60 bgColor=#ccffcc>500</TD>
+    <TD align=center width=52 bgColor=#ccffcc>750</TD>
+    <TD align=center width=72 bgColor=#ccffcc>1000</TD>
+    <TD align=center width=213 bgColor=#ccffcc>pulsout mot1, 750 </TD></TR>
+  <TR>
+    <TD align=center width=100 bgColor=#ccffcc>BS2e</TD>
+    <TD align=center width=83 bgColor=#ccffcc>2uS</TD>
+    <TD align=center width=60 bgColor=#ccffcc>500</TD>
+    <TD align=center width=52 bgColor=#ccffcc>750</TD>
+    <TD align=center width=72 bgColor=#ccffcc>1000</TD>
+    <TD align=center width=213 bgColor=#ccffcc>pulsout mot1, 750 </TD></TR>
+  <TR>
+    <TD align=center width=100 bgColor=#ccffcc>BS2sx</TD>
+    <TD align=center width=83 bgColor=#ccffcc>0.8uS</TD>
+    <TD align=center width=60 bgColor=#ccffcc>1250</TD>
+    <TD align=center width=52 bgColor=#ccffcc>1875</TD>
+    <TD align=center width=72 bgColor=#ccffcc>2500</TD>
+    <TD align=center width=213 bgColor=#ccffcc>pulsout mot1, 1875 </TD></TR>
+  <TR>
+    <TD align=center width=100 bgColor=#ccffcc>BS2p</TD>
+    <TD align=center width=83 bgColor=#ccffcc>0.8uS *</TD>
+    <TD align=center width=60 bgColor=#ccffcc>1250</TD>
+    <TD align=center width=52 bgColor=#ccffcc>1875</TD>
+    <TD align=center width=72 bgColor=#ccffcc>2500</TD>
+    <TD align=center width=213 bgColor=#ccffcc>pulsout mot1, 1875 </TD></TR>
+  <TR>
+    <TD align=center width=100 bgColor=#ccffcc>Atom</TD>
+    <TD align=center width=83 bgColor=#ccffcc>1uS</TD>
+    <TD align=center width=60 bgColor=#ccffcc>1000</TD>
+    <TD align=center width=52 bgColor=#ccffcc>1500</TD>
+    <TD align=center width=72 bgColor=#ccffcc>2000</TD>
+    <TD align=center width=213 bgColor=#ccffcc>pulsout mot1, 1500 </TD></TR>
+  <TR>
+    <TD align=center width=100 bgColor=#ccffcc>BX-24</TD>
+    <TD align=center width=83 bgColor=#ccffcc>1.085uS</TD>
+    <TD align=center width=60 bgColor=#ccffcc>922</TD>
+    <TD align=center width=52 bgColor=#ccffcc>1382</TD>
+    <TD align=center width=72 bgColor=#ccffcc>1843</TD>
+    <TD align=center width=213 bgColor=#ccffcc>call pulseout(mot1, 1382, 1) 
+  </TD></TR></TBODY></TABLE></CENTER></DIV>
+<P>* BS2p resolution is 0.8uS - rather than 0.75uS or 1.18uS as specified in 
+earlier BS2p documentation. Parallax have confirmed this to 
+us.</P>
+<p><b>Dec 2004 (from software version 3)<br>
+</b>Pulse time in RC mode is now verified to assure it is within specified time
+period of 800us to 2.2ms. Pulses outside of this timing will act to stop the
+motor. There is also the addition of an extra two RC servo modes which will stop
+the motors if a valid pulse is not received on channel 1 for a period of 200ms.</p>
+<p><b>Mar 2006 (from Version 9) </b><br>
+The MD22 now includes two ways to implement the turn, the first uses the forward
+and backwards channel to control the power with channel two offsetting the power
+levels to turn. The second method allows channel two to introduce turn without
+any forward or backwards movement.</p>
+<p>The latest (Version 10) md22.hex for the PIC16F873A is <a href="../files/md22.hex"> here</a></p>
+<p>MD22 schematics are <a href="../images/md22sch1.gif">md22sch1</a> and <a href="../images/md22sch2.gif">md22sch2</a></p>
+<p>&nbsp;</p>
+</BODY></HTML>

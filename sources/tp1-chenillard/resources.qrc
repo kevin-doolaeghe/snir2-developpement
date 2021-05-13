@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Images/CImp USB 8055.jpg</file>
+        <file>Images/Inter0.bmp</file>
+        <file>Images/Inter1.bmp</file>
+        <file>Images/Led jaune.png</file>
+        <file>Images/Led orange.png</file>
+        <file>Images/Led rouge.png</file>
+        <file>Images/Led verte.png</file>
+        <file>Images/Led1.png</file>
+    </qresource>
+</RCC>

@@ -1,1 +1,5 @@
-# snir2-developpement
+# BTS SNIR | 2e Année - Développement
+
+## Auteur
+
+Kevin Doolaeghe
