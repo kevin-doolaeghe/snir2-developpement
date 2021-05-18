@@ -1,4 +1,4 @@
-# BTS SNIR | 2e Année - Développement
+# BTS SNIR | 2e Année - Développement C++
 
 ## Auteur
 
